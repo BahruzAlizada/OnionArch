@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OnionArch.Application.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using OnionArch.Application.Repositories;
 using OnionArch.Domain.Entities;
 
 namespace OnionArch.Api.Controllers
@@ -9,16 +10,42 @@ namespace OnionArch.Api.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductService productService;
-        public ProductsController(IProductService productService)
+        private readonly IProductReadRepository productReadRepository;
+        private readonly IProductWriteRepository productWriteRepository;
+        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
         {
-            this.productService = productService;
+            this.productReadRepository = productReadRepository;
+            this.productWriteRepository = productWriteRepository;
         }
         [HttpGet("GetProducts")]
         public IActionResult GetProducts()
         {
-            List<Product> products = productService.GetProducts();
-            return Ok(products);
+           IQueryable<Product> products = productReadRepository.GetAll();
+           var productList = products.ToList();
+            return Ok(productList);
+        }
+
+        [HttpGet("Add")]
+        public async Task<IActionResult> Add()
+        {
+            Product product = new Product { Id = Guid.NewGuid(), Created = DateTime.Now, Name = "Alma", Price = 3, Stock = 100 };
+
+            await productWriteRepository.AddAsync(product);
+            await productWriteRepository.SaveAsync();
+            return Ok("OK");
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Remove(string id)
+        {
+            Product product = await productReadRepository.GetByIdAsync(id);
+            productWriteRepository.Remove(product);
+
+            int result =  await productWriteRepository.SaveAsync();
+            if (result == 1)
+                return Ok("Ok");
+            else
+                return Ok("Error");
         }
     }
 }

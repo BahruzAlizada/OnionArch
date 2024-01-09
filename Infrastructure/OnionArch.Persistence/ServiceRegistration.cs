@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OnionArch.Application.Abstractions;
-using OnionArch.Persistence.Concrete;
+using OnionArch.Application.Repositories;
 using OnionArch.Persistence.Contexts;
+using OnionArch.Persistence.Repositories;
 
 namespace OnionArch.Persistence
 {
@@ -12,7 +12,14 @@ namespace OnionArch.Persistence
             services.AddDbContext<Context>();
 
 
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+            services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
+
+            services.AddScoped<IOrderReadRepository, OrderReadRepository>();
+            services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
+
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
         }
     }
 }
