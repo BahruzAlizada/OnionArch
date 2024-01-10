@@ -1,6 +1,6 @@
 ﻿
 
-using OnionArch.Domain.Entities.Common;
+using OnionArch.Domain.Common;
 
 namespace OnionArch.Application.Repositories
 {

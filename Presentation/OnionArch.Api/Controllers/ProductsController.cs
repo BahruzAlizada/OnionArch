@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnionArch.Application.Repositories;
 using OnionArch.Domain.Entities;
 
@@ -17,7 +15,7 @@ namespace OnionArch.Api.Controllers
             this.productReadRepository = productReadRepository;
             this.productWriteRepository = productWriteRepository;
         }
-        [HttpGet("GetProducts")]
+        [HttpGet("GetProducts")]    
         public IActionResult GetProducts()
         {
            IQueryable<Product> products = productReadRepository.GetAll();
@@ -28,24 +26,26 @@ namespace OnionArch.Api.Controllers
         [HttpGet("Add")]
         public async Task<IActionResult> Add()
         {
-            Product product = new Product { Id = Guid.NewGuid(), Created = DateTime.Now, Name = "Alma", Price = 3, Stock = 100 };
+            Product product = new Product { Id = Guid.NewGuid(), Name = "Heyva", Price = 2, Stock = 80 };
 
             await productWriteRepository.AddAsync(product);
             await productWriteRepository.SaveAsync();
             return Ok("OK");
         }
 
+        #region Delete
         [HttpDelete]
         public async Task<IActionResult> Remove(string id)
         {
             Product product = await productReadRepository.GetByIdAsync(id);
             productWriteRepository.Remove(product);
 
-            int result =  await productWriteRepository.SaveAsync();
+            int result = await productWriteRepository.SaveAsync();
             if (result == 1)
                 return Ok("Ok");
             else
                 return Ok("Error");
         }
+        #endregion
     }
 }

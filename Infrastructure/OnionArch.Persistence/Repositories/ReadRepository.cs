@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnionArch.Application.Repositories;
-using OnionArch.Domain.Entities.Common;
+using OnionArch.Domain.Common;
 using OnionArch.Persistence.Contexts;
 using System.Linq.Expressions;
 
